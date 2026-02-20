@@ -35,18 +35,17 @@ Voce e um hacker recrutado pela resistencia. No **terminal**, personagens do Mat
 
 ## Deploy (Cloud Run)
 
-O servidor Express funciona como proxy para a API Gemini, escondendo a API key no backend.
+O servidor Express serve apenas arquivos estaticos. Cada jogador usa sua propria API key Gemini.
 
 ```bash
 # Instalar dependencias do servidor
 cd server && npm install && cd ..
 
 # Testar localmente
-GEMINI_API_KEY=sua_chave node server/server.js
+node server/server.js
 # Acesse http://localhost:8080
 
 # Deploy no Google Cloud Run
-export GEMINI_API_KEY=sua_chave
 export GCP_PROJECT_ID=seu_projeto
 ./deploy.sh
 ```
@@ -55,7 +54,7 @@ export GCP_PROJECT_ID=seu_projeto
 
 ```bash
 docker build -t matrix .
-docker run -p 8080:8080 -e GEMINI_API_KEY=sua_chave matrix
+docker run -p 8080:8080 matrix
 ```
 
 ## Estrutura do Projeto
@@ -88,7 +87,7 @@ matrix/
 │   ├── tutorial.js         # Tutorial interativo
 │   └── infinite.js         # Missoes infinitas geradas por IA
 ├── server/
-│   ├── server.js           # Express proxy server
+│   ├── server.js           # Static file server
 │   └── package.json        # Dependencias do servidor
 ├── Dockerfile              # Container Cloud Run
 ├── deploy.sh               # Script de deploy GCP
