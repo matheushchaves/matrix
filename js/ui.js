@@ -3,6 +3,7 @@
 import { getState, setState } from './state.js';
 import { MATRIX_APIS, getUnlockedAPIs } from './matrix-api.js';
 import { isProxyActive } from './gemini.js';
+import { startMusic, stopMusic } from './audio.js';
 
 export function updateUI() {
   const state = getState();
@@ -69,8 +70,17 @@ export function setupModals() {
   document.getElementById('settings-save')?.addEventListener('click', () => {
     setState('settings.geminiApiKey', document.getElementById('settings-apikey').value);
     setState('settings.geminiModel', document.getElementById('settings-model').value);
-    setState('settings.soundEnabled', document.getElementById('settings-sound').checked);
+    const soundEnabled = document.getElementById('settings-sound').checked;
+    setState('settings.soundEnabled', soundEnabled);
     setState('settings.voiceEnabled', document.getElementById('settings-voice').checked);
+
+    // Toggle music based on sound setting
+    if (soundEnabled) {
+      startMusic();
+    } else {
+      stopMusic();
+    }
+
     hideModal('settings-modal');
   });
 

@@ -1,6 +1,7 @@
 // ===== HOME SCREEN =====
 
 import { getState, setState } from './state.js';
+import { startMusic, stopMusic } from './audio.js';
 
 const TAGLINES = [
   'Voce esta pronto?',
@@ -108,9 +109,18 @@ function openSettingsFromHome() {
     document.getElementById('settings-save')?.addEventListener('click', () => {
       setState('settings.geminiApiKey', document.getElementById('settings-apikey').value);
       setState('settings.geminiModel', document.getElementById('settings-model').value);
-      setState('settings.soundEnabled', document.getElementById('settings-sound').checked);
+      const soundEnabled = document.getElementById('settings-sound').checked;
+      setState('settings.soundEnabled', soundEnabled);
       const voiceEl = document.getElementById('settings-voice');
       if (voiceEl) setState('settings.voiceEnabled', voiceEl.checked);
+
+      // Toggle music based on sound setting
+      if (soundEnabled) {
+        startMusic();
+      } else {
+        stopMusic();
+      }
+
       settingsModal.classList.add('hidden');
     });
 

@@ -10,6 +10,7 @@ import {
 import { initHome, hideHome, showAliasModal } from './home.js';
 import { startMission, handleCodeSubmission, handleTerminalInput } from './story.js';
 import { addSystemLine } from './terminal.js';
+import { startMusic } from './audio.js';
 
 async function init() {
   // Start rain immediately for atmosphere
@@ -129,6 +130,12 @@ function setupGame() {
 
   // Update HUD
   updateUI();
+
+  // Start soundtrack (if sound enabled)
+  const state = getState();
+  if (state.settings.soundEnabled) {
+    startMusic();
+  }
 
   // Terminal input handler
   const terminalInput = document.getElementById('terminal-input');

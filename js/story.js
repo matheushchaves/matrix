@@ -13,11 +13,17 @@ import {
   addAvatarLine
 } from './terminal.js';
 import { triggerEffect } from './effects.js';
+import { playSFX } from './audio.js';
 import { updateUI, updateAPIReference, updateMissionBar } from './ui.js';
 import { generateInfiniteMission, recordInfiniteCompletion } from './infinite.js';
 
 // Currently active infinite mission (not part of main progression)
 let activeInfiniteMission = null;
+
+function maybeSFX(name) {
+  const state = getState();
+  if (state.settings.soundEnabled) playSFX(name);
+}
 
 export function getCurrentMission() {
   // If there's an active infinite mission, return that
@@ -57,6 +63,7 @@ export async function startMission(mission) {
 
   // Show character avatar
   addAvatarLine(mission.character);
+  maybeSFX('mission_start');
 
   // Show intro dialogue with typewriter effect
   const alias = state.player.alias;
@@ -106,6 +113,7 @@ export async function handleCodeSubmission() {
 
   // Execute code in sandbox
   addSystemLine('Executando codigo...');
+  maybeSFX('code_run');
   const result = await executeCode(code, apis);
 
   // Show execution result
@@ -252,6 +260,7 @@ async function handleMissionComplete(mission, response) {
 
     if (api) {
       await sleep(500);
+      maybeSFX('unlock');
       addSuccessLine(`Nova API desbloqueada: ${api.name}`);
       addSystemLine(`${api.description}`);
       triggerEffect('rain_intensify');
@@ -262,6 +271,7 @@ async function handleMissionComplete(mission, response) {
   if (mission.nextLevel) {
     setState('player.level', mission.nextLevel);
     await sleep(300);
+    maybeSFX('level_up');
     addSuccessLine(`Nivel: ${mission.nextLevel}`);
   }
 
@@ -412,6 +422,7 @@ export async function handleTerminalInput(text) {
 
 async function handleNewInfiniteMission() {
   addSystemLine('Gerando nova missao...');
+  maybeSFX('transmission');
   showTypingIndicator();
 
   try {
