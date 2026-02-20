@@ -102,3 +102,20 @@
   position: relative;
   z-index: 152 !important;
 }
+
+/* Mobile tooltip */
+@media (max-width: 768px) {
+  #tutorial-tooltip {
+    top: auto !important;
+    bottom: 16px;
+    left: 16px !important;
+    right: 16px;
+    max-width: calc(100vw - 32px);
+    position: fixed;
+  }
+
+  .tutorial-actions button {
+    min-height: 44px;
+    padding: 8px 20px;
+  }
+}

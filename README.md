@@ -33,18 +33,25 @@ Voce e um hacker recrutado pela resistencia. No **terminal**, personagens do Mat
 
 > Funciona direto no navegador via `file://` — nenhuma instalacao necessaria.
 
+## Desenvolvimento
+
+```bash
+# Instalar dependencias
+cd server && npm install && cd ..
+
+# Subir o servidor de desenvolvimento
+node server/server.js
+```
+
+Acesse **http://localhost:8080**. O servidor Express serve os arquivos estaticos da raiz do projeto. Qualquer alteracao em HTML/CSS/JS basta recarregar o navegador.
+
+Para testar a versao mobile, use o **Device Mode** do Chrome DevTools (F12 > toggle device toolbar) com iPhone SE, iPhone 14 Pro ou Pixel 7.
+
 ## Deploy (Cloud Run)
 
 O servidor Express serve apenas arquivos estaticos. Cada jogador usa sua propria API key Gemini.
 
 ```bash
-# Instalar dependencias do servidor
-cd server && npm install && cd ..
-
-# Testar localmente
-node server/server.js
-# Acesse http://localhost:8080
-
 # Deploy no Google Cloud Run
 export GCP_PROJECT_ID=seu_projeto
 ./deploy.sh
@@ -85,6 +92,7 @@ matrix/
 │   ├── voice.js            # TTS via Gemini (fila sequencial)
 │   ├── audio.js            # SFX sintetizados
 │   ├── tutorial.js         # Tutorial interativo
+│   ├── mobile.js           # Suporte mobile (swipe, indicador, touch)
 │   └── infinite.js         # Missoes infinitas geradas por IA
 ├── server/
 │   ├── server.js           # Static file server

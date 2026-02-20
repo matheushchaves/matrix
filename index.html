@@ -2,10 +2,37 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matrix: O Codigo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <title>Matrix: O Código</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#00FF41">
+
+  <!-- Favicon & Apple Touch Icon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+
+  <!-- Apple PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Matrix">
+
+  <!-- SEO -->
+  <meta name="description" content="Um jogo de programação imersivo ambientado no universo Matrix. Escreva código JavaScript para hackear a Matrix e libertar sua mente.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Matrix: O Código">
+  <meta property="og:description" content="Escreva código JavaScript para hackear a Matrix. Um jogo de programação imersivo com IA.">
+  <meta property="og:image" content="/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Matrix: O Código">
+  <meta name="twitter:description" content="Escreva código JavaScript para hackear a Matrix. Um jogo de programação imersivo com IA.">
+  <meta name="twitter:image" content="/assets/og-image.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,8 +44,46 @@
   <link rel="stylesheet" href="css/effects.css">
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="css/tutorial.css">
+
+  <!-- Loading Screen (inline - no external deps) -->
+  <style id="loading-style">
+    #loading-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 9999;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+    }
+    #loading-screen .loading-m {
+      font-size: 120px;
+      font-weight: bold;
+      color: #00FF41;
+      text-shadow: 0 0 20px rgba(0,255,65,0.5), 0 0 40px rgba(0,255,65,0.2);
+      animation: loading-pulse 1.5s ease-in-out infinite;
+    }
+    #loading-screen .loading-text {
+      color: #008F11;
+      font-size: 14px;
+      margin-top: 24px;
+      letter-spacing: 2px;
+    }
+    @keyframes loading-pulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+  </style>
 </head>
 <body>
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-m">M</div>
+    <div class="loading-text">CARREGANDO...</div>
+  </div>
   <!-- Matrix Digital Rain Background -->
   <canvas id="rain-canvas"></canvas>
 
@@ -96,6 +161,16 @@
       </div>
     </header>
 
+    <!-- Panel Indicator (mobile) -->
+    <div id="panel-indicator" class="panel-indicator">
+      <button class="panel-dot active" data-panel="0" aria-label="Terminal">
+        <span class="panel-dot-label">Terminal</span>
+      </button>
+      <button class="panel-dot" data-panel="1" aria-label="Editor">
+        <span class="panel-dot-label">Editor</span>
+      </button>
+    </div>
+
     <!-- Main Content -->
     <main id="main-content">
       <!-- Terminal Panel -->
@@ -103,7 +178,7 @@
         <div id="terminal-output"></div>
         <div id="terminal-input-area">
           <span class="prompt-char">&gt;</span>
-          <input type="text" id="terminal-input" placeholder="Digite aqui..." autocomplete="off" spellcheck="false">
+          <input type="text" id="terminal-input" placeholder="Digite aqui..." autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" inputmode="text">
         </div>
       </section>
 

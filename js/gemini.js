@@ -125,26 +125,35 @@ export async function callGemini(userMessage, missionContext = '') {
   const history = state.story.conversationHistory.slice(-10);
 
   try {
-    const response = await fetch(
-      getApiUrl(model),
-      {
+    const requestBody = JSON.stringify({
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents: [
+        ...history,
+        { role: 'user', parts: [{ text: userMessage }] }
+      ],
+      generationConfig: {
+        temperature: 0.8,
+        topP: 0.95,
+        maxOutputTokens: 1024,
+        responseMimeType: 'application/json',
+      }
+    });
+
+    const fetchWithRetry = async (attempt = 0) => {
+      const response = await fetch(getApiUrl(model), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: systemPrompt }] },
-          contents: [
-            ...history,
-            { role: 'user', parts: [{ text: userMessage }] }
-          ],
-          generationConfig: {
-            temperature: 0.8,
-            topP: 0.95,
-            maxOutputTokens: 1024,
-            responseMimeType: 'application/json',
-          }
-        })
+        body: requestBody,
+      });
+      if (!response.ok && [429, 503].includes(response.status) && attempt < 1) {
+        const delay = (attempt + 1) * 2000;
+        await new Promise(r => setTimeout(r, delay));
+        return fetchWithRetry(attempt + 1);
       }
-    );
+      return response;
+    };
+
+    const response = await fetchWithRetry();
 
     if (!response.ok) {
       const errText = await response.text();

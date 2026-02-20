@@ -11,8 +11,36 @@ import { initHome, hideHome, showAliasModal } from './home.js';
 import { startMission, handleCodeSubmission, handleTerminalInput } from './story.js';
 import { addSystemLine } from './terminal.js';
 import { startMusic } from './audio.js';
+import { initMobile } from './mobile.js';
+
+// ===== GLOBAL ERROR HANDLING =====
+window.onerror = (msg, source, line, col, error) => {
+  console.error('Global error:', msg, source, line, col, error);
+  try {
+    addSystemLine(`[ERRO] ${msg}`);
+  } catch { /* terminal may not be ready */ }
+  return false;
+};
+
+window.onunhandledrejection = (event) => {
+  console.error('Unhandled rejection:', event.reason);
+  try {
+    const msg = event.reason?.message || String(event.reason);
+    addSystemLine(`[ERRO] ${msg}`);
+  } catch { /* terminal may not be ready */ }
+};
+
+function removeLoadingScreen() {
+  const el = document.getElementById('loading-screen');
+  if (el) el.remove();
+  const style = document.getElementById('loading-style');
+  if (style) style.remove();
+}
 
 async function init() {
+  // Remove loading screen
+  removeLoadingScreen();
+
   // Start rain immediately for atmosphere
   initRain();
 
@@ -130,6 +158,9 @@ function setupGame() {
 
   // Update HUD
   updateUI();
+
+  // Init mobile support
+  initMobile();
 
   // Start soundtrack (if sound enabled)
   const state = getState();

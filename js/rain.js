@@ -9,11 +9,19 @@ let speedMultiplier = 1;
 let animFrameId = null;
 let paused = false;
 
+let resizeTimer = null;
+
+function debouncedResize() {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(resize, 200);
+}
+
 export function initRain() {
   canvas = document.getElementById('rain-canvas');
   ctx = canvas.getContext('2d');
   resize();
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize', debouncedResize);
+  window.addEventListener('orientationchange', debouncedResize);
   start();
 }
 
