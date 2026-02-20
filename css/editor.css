@@ -1,0 +1,166 @@
+/* ===== CODEMIRROR MATRIX THEME ===== */
+
+.CodeMirror {
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85) !important;
+  color: #00FF41 !important;
+  font-family: 'Share Tech Mono', 'Courier New', monospace !important;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.CodeMirror-focused {
+  outline: none;
+}
+
+/* Cursor */
+.CodeMirror-cursor {
+  border-left: 2px solid #00FF41 !important;
+  box-shadow: 0 0 4px rgba(0, 255, 65, 0.5);
+}
+
+/* Selection */
+.CodeMirror-selected,
+.CodeMirror-focused .CodeMirror-selected {
+  background: rgba(0, 255, 65, 0.12) !important;
+}
+
+/* Matching brackets */
+.CodeMirror-matchingbracket {
+  color: #FFFFFF !important;
+  background: rgba(0, 255, 65, 0.25) !important;
+  border-bottom: 1px solid #00FF41;
+}
+
+.CodeMirror-nonmatchingbracket {
+  color: #FF0000 !important;
+}
+
+/* Gutters */
+.CodeMirror-gutters {
+  background: rgba(0, 10, 0, 0.9) !important;
+  border-right: 1px solid #003B00 !important;
+}
+
+.CodeMirror-linenumber {
+  color: #006400 !important;
+  font-size: 11px;
+}
+
+/* Active line */
+.CodeMirror-activeline-background {
+  background: rgba(0, 255, 65, 0.04) !important;
+}
+
+/* Scrollbar */
+.CodeMirror-simplescroll-horizontal div,
+.CodeMirror-simplescroll-vertical div {
+  background: #003B00 !important;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar,
+.CodeMirror-hscrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar-track,
+.CodeMirror-hscrollbar::-webkit-scrollbar-track {
+  background: #000;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb,
+.CodeMirror-hscrollbar::-webkit-scrollbar-thumb {
+  background: #003B00;
+}
+
+/* ===== SYNTAX HIGHLIGHTING ===== */
+
+/* Keywords: function, return, const, let, var, if, else, for, while, etc. */
+.cm-keyword {
+  color: #39FF14 !important;
+  font-weight: bold;
+}
+
+/* Strings */
+.cm-string {
+  color: #7FFF00 !important;
+}
+
+.cm-string-2 {
+  color: #ADFF2F !important;
+}
+
+/* Numbers */
+.cm-number {
+  color: #ADFF2F !important;
+}
+
+/* Comments */
+.cm-comment {
+  color: #006400 !important;
+  font-style: italic;
+}
+
+/* Definitions (function names, etc.) */
+.cm-def {
+  color: #00FF7F !important;
+}
+
+/* Variables */
+.cm-variable {
+  color: #00FF41 !important;
+}
+
+.cm-variable-2 {
+  color: #00CC33 !important;
+}
+
+.cm-variable-3 {
+  color: #00FF7F !important;
+}
+
+/* Properties */
+.cm-property {
+  color: #32CD32 !important;
+}
+
+/* Operators */
+.cm-operator {
+  color: #32CD32 !important;
+}
+
+/* Atoms (true, false, null, undefined) */
+.cm-atom {
+  color: #ADFF2F !important;
+}
+
+/* Brackets */
+.cm-bracket {
+  color: #008F11 !important;
+}
+
+/* Tags */
+.cm-tag {
+  color: #00FF41 !important;
+}
+
+/* Attributes */
+.cm-attribute {
+  color: #7FFF00 !important;
+}
+
+/* Type annotations */
+.cm-type {
+  color: #00FF7F !important;
+}
+
+/* Error */
+.cm-error {
+  color: #FF0000 !important;
+}
+
+/* Placeholder text */
+.CodeMirror pre.CodeMirror-placeholder {
+  color: #003B00 !important;
+}

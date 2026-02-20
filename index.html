@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrix: O Codigo</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/editor.css">
+  <link rel="stylesheet" href="css/effects.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/tutorial.css">
+</head>
+<body>
+  <!-- Matrix Digital Rain Background -->
+  <canvas id="rain-canvas"></canvas>
+
+  <!-- Home Screen -->
+  <div id="home-screen" class="overlay">
+    <div class="home-content">
+      <h1 class="home-title">MATRIX <span class="title-sep">:</span> O CODIGO</h1>
+      <div id="home-tagline" class="home-tagline"></div>
+      <nav class="home-menu">
+        <button id="btn-new-game" class="home-btn">Nova Partida</button>
+        <button id="btn-continue" class="home-btn hidden">Continuar</button>
+        <button id="btn-tutorial" class="home-btn secondary">Tutorial</button>
+        <button id="btn-home-settings" class="home-btn secondary">Configuracoes</button>
+      </nav>
+    </div>
+    <div class="home-footer">MATRIX : O CODIGO &mdash; Programacao imersiva</div>
+  </div>
+
+  <!-- Alias Modal -->
+  <div id="alias-modal" class="overlay hidden">
+    <div class="modal">
+      <h2>Identifique-se</h2>
+      <label class="alias-label" for="alias-input">Escolha seu codinome:</label>
+      <input type="text" class="alias-input" id="alias-input" maxlength="20" autocomplete="off" spellcheck="false">
+      <button class="alias-confirm" id="alias-confirm">Entrar</button>
+    </div>
+  </div>
+
+  <!-- API Key Modal -->
+  <div id="apikey-modal" class="overlay hidden">
+    <div class="modal">
+      <h2>Conexao com a Matrix</h2>
+      <p>Voce precisa de uma chave gratuita do Google AI Studio para se conectar a Matrix.</p>
+      <div class="apikey-steps">
+        <p class="apikey-step">1. Clique no link abaixo e faca login com sua conta Google</p>
+        <p class="apikey-step">2. Clique em <strong>"Create API Key"</strong></p>
+        <p class="apikey-step">3. Copie a chave e cole no campo abaixo</p>
+      </div>
+      <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" class="apikey-link">Gerar API Key no Google AI Studio &rarr;</a>
+      <input type="password" id="apikey-input" placeholder="Cole sua API key aqui" autocomplete="off">
+      <p class="modal-hint">A chave e armazenada apenas localmente no seu navegador.</p>
+      <button id="apikey-confirm">Conectar</button>
+    </div>
+  </div>
+
+  <!-- Tutorial Overlay -->
+  <div id="tutorial-overlay" class="hidden">
+    <div id="tutorial-spotlight"></div>
+    <div id="tutorial-tooltip">
+      <div id="tutorial-step-indicator"></div>
+      <p id="tutorial-text"></p>
+      <div class="tutorial-actions">
+        <button id="tutorial-skip">Pular</button>
+        <button id="tutorial-next">Proximo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Game UI -->
+  <div id="game-ui" class="hidden">
+    <!-- Top Bar HUD -->
+    <header id="hud">
+      <div class="hud-left">
+        <span class="hud-title">MATRIX <span class="hud-version">v2.0</span></span>
+      </div>
+      <div class="hud-center">
+        <span id="hud-alias">Operador: ---</span>
+        <span class="hud-sep">|</span>
+        <span id="hud-level">Nivel: 1</span>
+        <span class="hud-sep">|</span>
+        <span id="hud-reputation">Rep: 0</span>
+      </div>
+      <div class="hud-right">
+        <button id="btn-settings" title="Configuracoes">&#9881;</button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+      <!-- Terminal Panel -->
+      <section id="terminal-panel">
+        <div id="terminal-output"></div>
+        <div id="terminal-input-area">
+          <span class="prompt-char">&gt;</span>
+          <input type="text" id="terminal-input" placeholder="Digite aqui..." autocomplete="off" spellcheck="false">
+        </div>
+      </section>
+
+      <!-- Editor Panel -->
+      <section id="editor-panel">
+        <div id="editor-header">
+          <span>Editor de Codigo</span>
+          <button id="btn-run" title="Executar codigo">&#9654; EXECUTAR</button>
+        </div>
+        <div id="editor-container">
+          <textarea id="code-editor"></textarea>
+        </div>
+        <div id="api-reference">
+          <div id="api-reference-title">APIs Disponiveis</div>
+          <div id="api-list"></div>
+        </div>
+        <div id="execution-output" class="hidden">
+          <div id="execution-output-title">Saida</div>
+          <pre id="execution-result"></pre>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Bar -->
+    <footer id="mission-bar">
+      <span id="mission-name">MISSAO: ---</span>
+      <span class="hud-sep">|</span>
+      <span id="mission-objective">Aguardando instrucoes...</span>
+      <button id="btn-help" title="Ajuda">?</button>
+    </footer>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="overlay hidden">
+    <div class="modal">
+      <h2>Configuracoes</h2>
+      <div class="setting-row">
+        <label>API Key Gemini:</label>
+        <input type="password" id="settings-apikey" autocomplete="off">
+      </div>
+      <div class="setting-row apikey-row-hint">
+        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" class="apikey-link-small">Gerar chave no Google AI Studio &rarr;</a>
+      </div>
+      <div class="setting-row">
+        <label>Modelo Gemini:</label>
+        <select id="settings-model">
+          <option value="gemini-2.5-flash">gemini-2.5-flash (rapido)</option>
+          <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (mais rapido)</option>
+          <option value="gemini-2.5-pro">gemini-2.5-pro (melhor)</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <label>Som:</label>
+        <input type="checkbox" id="settings-sound" checked>
+      </div>
+      <div class="setting-row">
+        <label>Voz (TTS):</label>
+        <input type="checkbox" id="settings-voice" checked>
+      </div>
+      <div class="modal-actions">
+        <button id="settings-save">Salvar</button>
+        <button id="settings-close">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div id="help-modal" class="overlay hidden">
+    <div class="modal modal-wide">
+      <h2>Como Jogar</h2>
+      <div class="help-content">
+        <p><strong>Matrix: O Codigo</strong> e um jogo onde voce programa para hackear a Matrix.</p>
+        <h3>Basico</h3>
+        <ul>
+          <li>Leia as instrucoes no <strong>Terminal</strong> (painel esquerdo)</li>
+          <li>Escreva seu codigo no <strong>Editor</strong> (painel direito)</li>
+          <li>Clique em <strong>EXECUTAR</strong> ou pressione <kbd>Ctrl+Enter</kbd></li>
+          <li>A IA avaliara seu codigo e a historia continuara</li>
+        </ul>
+        <h3>APIs da Matrix</h3>
+        <p>Conforme voce avanca, desbloqueia novas APIs para interagir com a Matrix. Consulte o painel "APIs Disponiveis" no editor.</p>
+        <h3>Dicas</h3>
+        <ul>
+          <li>Seja criativo! Solucoes elegantes ganham mais pontos.</li>
+          <li>Use o terminal para conversar com os personagens.</li>
+          <li>Apos completar as 7 missoes, digite "nova missao" para desafios infinitos!</li>
+          <li>Seu progresso e salvo automaticamente.</li>
+        </ul>
+      </div>
+      <button id="help-close">Fechar</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/addon/edit/matchbrackets.min.js"></script>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

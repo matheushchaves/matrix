@@ -1,0 +1,104 @@
+/* ===== TUTORIAL OVERLAY ===== */
+#tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 150;
+  pointer-events: none;
+}
+
+#tutorial-overlay.active {
+  pointer-events: auto;
+}
+
+/* Spotlight cutout effect */
+#tutorial-spotlight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 151;
+  pointer-events: none;
+  transition: all 0.4s ease;
+}
+
+#tutorial-overlay.active #tutorial-spotlight {
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.8);
+  pointer-events: auto;
+}
+
+/* Tooltip */
+#tutorial-tooltip {
+  position: fixed;
+  z-index: 152;
+  background: rgba(0, 10, 0, 0.95);
+  border: 1px solid var(--green);
+  padding: 16px 20px;
+  max-width: 340px;
+  box-shadow: 0 0 15px var(--green-glow);
+  pointer-events: auto;
+  transition: all 0.3s ease;
+}
+
+#tutorial-step-indicator {
+  font-size: 11px;
+  color: var(--green-dim);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+#tutorial-text {
+  font-size: 13px;
+  color: var(--green);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.tutorial-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.tutorial-actions button {
+  background: transparent;
+  border: 1px solid var(--green-dim);
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tutorial-actions button:hover {
+  background: var(--green);
+  color: var(--black);
+  border-color: var(--green);
+}
+
+#tutorial-skip {
+  border-color: var(--green-dark);
+  color: var(--green-dim);
+}
+
+#tutorial-skip:hover {
+  background: transparent;
+  color: var(--green);
+  border-color: var(--green);
+}
+
+/* Highlight ring around target element */
+.tutorial-highlight {
+  outline: 2px solid var(--green) !important;
+  outline-offset: 4px;
+  box-shadow: 0 0 12px var(--green-glow) !important;
+  position: relative;
+  z-index: 152 !important;
+}
