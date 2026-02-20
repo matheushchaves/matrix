@@ -6,6 +6,8 @@ export function initEditor(onRun) {
   const textarea = document.getElementById('code-editor');
   if (!textarea) return;
 
+  const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
   editor = CodeMirror.fromTextArea(textarea, {
     mode: 'javascript',
     lineNumbers: true,
@@ -16,6 +18,7 @@ export function initEditor(onRun) {
     indentWithTabs: false,
     lineWrapping: true,
     placeholder: '// Escreva seu codigo aqui...',
+    inputStyle: isMobileDevice ? 'contenteditable' : 'textarea',
     extraKeys: {
       'Ctrl-Enter': () => onRun && onRun(),
       'Cmd-Enter': () => onRun && onRun(),

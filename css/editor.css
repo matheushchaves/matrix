@@ -164,3 +164,18 @@
 .CodeMirror pre.CodeMirror-placeholder {
   color: #003B00 !important;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .CodeMirror {
+    font-size: 14px;
+  }
+
+  .CodeMirror-linenumber {
+    font-size: 10px !important;
+  }
+
+  .CodeMirror-gutters {
+    min-width: 28px;
+  }
+}

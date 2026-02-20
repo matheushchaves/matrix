@@ -83,6 +83,17 @@ function showStep(index) {
   // Highlight target
   target.classList.add('tutorial-highlight');
 
+  // On mobile, auto-scroll to editor panel if target is inside it
+  if (window.innerWidth <= 768) {
+    const mainContent = document.getElementById('main-content');
+    const editorPanel = document.getElementById('editor-panel');
+    if (mainContent && editorPanel && editorPanel.contains(target)) {
+      mainContent.scrollTo({ left: mainContent.offsetWidth, behavior: 'smooth' });
+    } else if (mainContent) {
+      mainContent.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+  }
+
   // Position spotlight
   const rect = target.getBoundingClientRect();
   const spotlight = document.getElementById('tutorial-spotlight');
@@ -114,10 +125,14 @@ function showStep(index) {
 }
 
 function positionTooltip(tooltip, targetRect, position) {
+  const vw = window.innerWidth;
+
+  // On mobile, CSS handles positioning (pinned to bottom)
+  if (vw <= 768) return;
+
   const gap = 16;
   const margin = 10;
   const tooltipWidth = 340;  // max-width from CSS
-  const vw = window.innerWidth;
   const vh = window.innerHeight;
 
   tooltip.style.top = '';
