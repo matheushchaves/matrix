@@ -4,6 +4,7 @@ import { getState, setState, updateState } from './state.js';
 import { getMissionByIndex, getChapter } from './missions.js';
 import { getApiById } from './matrix-api.js';
 import { callGemini, callGeminiForChat } from './gemini.js';
+import { speakText } from './voice.js';
 import { executeCode, buildAPIs } from './sandbox.js';
 import { getCode, setCode } from './editor.js';
 import {
@@ -14,7 +15,7 @@ import {
 } from './terminal.js';
 import { triggerEffect } from './effects.js';
 import { playSFX } from './audio.js';
-import { updateUI, updateAPIReference, updateMissionBar } from './ui.js';
+import { updateUI, updateAPIReference, updateMissionBar, runAPIKeySequence } from './ui.js';
 import { generateInfiniteMission, recordInfiniteCompletion } from './infinite.js';
 
 // Currently active infinite mission (not part of main progression)
@@ -46,6 +47,13 @@ export async function startMission(mission) {
     mission = getCurrentMission();
   }
 
+  // Demo mode: limit to first 3 missions (Morpheus chapter)
+  const stateCheck = getState();
+  if (stateCheck.settings.demoMode && stateCheck.player.completedMissions.length >= 3) {
+    await showDemoComplete();
+    return;
+  }
+
   if (!mission) {
     await showGameComplete();
     return;
@@ -66,7 +74,21 @@ export async function startMission(mission) {
   maybeSFX('mission_start');
 
   // Show intro dialogue with typewriter effect
+  // Batch all dialogue lines into a single TTS call (instead of one per line)
   const alias = state.player.alias;
+  const dialogueLines = [];
+  for (const line of mission.introDialogue) {
+    const text = line.replace('{alias}', alias);
+    if (!text.startsWith('[')) {
+      dialogueLines.push(text);
+    }
+  }
+
+  // Fire single TTS call for all intro lines concatenated
+  if (dialogueLines.length > 0) {
+    speakText(dialogueLines.join(' '), mission.character).catch(() => {});
+  }
+
   for (const line of mission.introDialogue) {
     const text = line.replace('{alias}', alias);
     if (text.startsWith('[')) {
@@ -74,7 +96,7 @@ export async function startMission(mission) {
       addSystemLine(text);
       await sleep(500);
     } else {
-      await typewriterCharacterLine(mission.character, text, 25);
+      await typewriterCharacterLine(mission.character, text, 25, { skipTTS: true });
       await sleep(300);
     }
   }
@@ -334,6 +356,53 @@ function buildFallbackResponse(result, mission) {
   };
 }
 
+async function showDemoComplete() {
+  const state = getState();
+  const alias = state.player.alias;
+
+  addSystemLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  addSystemLine('DEMO COMPLETA');
+  addSystemLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+  await typewriterCharacterLine('morpheus',
+    `Voce viu apenas o comeco, ${alias}. Para continuar, precisa da sua propria conexao com a Matrix.`, 25);
+  await sleep(500);
+
+  addSystemLine('Para jogar as missoes 4-7, voce precisa de uma API key gratuita do Google AI Studio.');
+  addSystemLine('');
+
+  // Show API key modal to let user enter their own key
+  const modal = document.getElementById('apikey-modal');
+  modal.classList.remove('hidden');
+
+  return new Promise((resolve) => {
+    const onConfirm = () => {
+      const key = document.getElementById('apikey-input').value.trim();
+      if (!key) return;
+      setState('settings.geminiApiKey', key);
+      setState('settings.demoMode', false);
+      modal.classList.add('hidden');
+
+      addSuccessLine('Conexao propria estabelecida! Continuando as missoes...');
+      sleep(1000).then(() => startMission());
+      resolve();
+    };
+
+    // Use cloned listeners to avoid double-binding
+    const confirmBtn = document.getElementById('apikey-confirm');
+    const input = document.getElementById('apikey-input');
+    const clonedBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(clonedBtn, confirmBtn);
+    const clonedInput = input.cloneNode(true);
+    input.parentNode.replaceChild(clonedInput, input);
+
+    clonedBtn.addEventListener('click', onConfirm);
+    clonedInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') onConfirm();
+    });
+  });
+}
+
 async function showGameComplete() {
   addSystemLine('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
   addSuccessLine('MATRIX: O CODIGO - COMPLETO');
@@ -402,6 +471,10 @@ export async function handleTerminalInput(text) {
     return;
   }
   if (lower === 'nova missao' || lower === 'new mission') {
+    if (getState().settings.demoMode) {
+      addSystemLine('Modo demo: missoes infinitas nao disponiveis. Insira sua API key para desbloquear.');
+      return;
+    }
     await handleNewInfiniteMission();
     return;
   }

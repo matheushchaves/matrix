@@ -25,6 +25,7 @@ const initialState = {
     geminiModel: 'gemini-2.5-flash',
     soundEnabled: true,
     voiceEnabled: true,
+    demoMode: false,
     rainSpeed: 1,
   },
   infinite: {
@@ -100,7 +101,7 @@ function debouncedSave() {
           storyStarted: state.story.storyStarted,
           conversationHistory: state.story.conversationHistory.slice(-10),
         },
-        settings: state.settings,
+        settings: { ...state.settings, demoMode: undefined },
         infinite: state.infinite,
       };
       localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));

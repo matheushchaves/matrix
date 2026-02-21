@@ -59,6 +59,10 @@ async function init() {
       hideHome();
       await resumeGame();
       break;
+    case 'demo':
+      hideHome();
+      await demoGame();
+      break;
     case 'tutorial':
       hideHome();
       await runTutorial();
@@ -89,6 +93,35 @@ async function newGame() {
   // Welcome message
   addSystemLine('Conexao estabelecida.');
   addSystemLine(`Bem-vindo a Matrix, ${alias}.`);
+  addSystemLine('');
+
+  // Start first mission
+  await sleep(1000);
+  await startMission();
+}
+
+async function demoGame() {
+  // Reset any existing save to start fresh
+  resetSave();
+
+  // Fixed alias — no modal
+  setState('player.alias', 'Neo');
+
+  // Enable demo mode, disable voice (saves API calls)
+  setState('settings.demoMode', true);
+  setState('settings.voiceEnabled', false);
+
+  // Mark story as started
+  setState('story.storyStarted', true);
+
+  // Setup game UI (skip API key sequence)
+  showGameUI();
+  setupGame();
+
+  // Welcome message
+  addSystemLine('Modo demonstracao ativado. Missoes 1-3 disponiveis.');
+  addSystemLine('Conexao estabelecida.');
+  addSystemLine('Bem-vindo a Matrix, Neo.');
   addSystemLine('');
 
   // Start first mission

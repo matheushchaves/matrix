@@ -32,6 +32,9 @@ export function initHome() {
     }
   }
 
+  // Check if demo is available via /health endpoint
+  checkDemoAvailable();
+
   // Return promise that resolves with action
   return new Promise((resolve) => {
     document.getElementById('btn-new-game')?.addEventListener('click', () => {
@@ -44,6 +47,11 @@ export function initHome() {
       resolve('continue');
     });
 
+    document.getElementById('btn-demo')?.addEventListener('click', () => {
+      stopTaglineRotation();
+      resolve('demo');
+    });
+
     document.getElementById('btn-tutorial')?.addEventListener('click', () => {
       stopTaglineRotation();
       resolve('tutorial');
@@ -53,6 +61,23 @@ export function initHome() {
       openSettingsFromHome();
     });
   });
+}
+
+async function checkDemoAvailable() {
+  const btnDemo = document.getElementById('btn-demo');
+  if (!btnDemo) return;
+
+  try {
+    const res = await fetch('/health');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.demo) {
+        btnDemo.classList.remove('hidden');
+      }
+    }
+  } catch {
+    // Demo not available (e.g. running via file:// or no server)
+  }
 }
 
 export function hideHome() {

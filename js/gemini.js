@@ -42,6 +42,9 @@ function getDirectUrl(model) {
 }
 
 function getApiUrl(model) {
+  if (getState().settings.demoMode) {
+    return `/api/gemini-demo/${model}`;
+  }
   if (proxyAvailable) {
     return `/api/gemini/${model}`;
   }
@@ -49,6 +52,9 @@ function getApiUrl(model) {
 }
 
 function getTtsApiUrl(model) {
+  if (getState().settings.demoMode) {
+    return `/api/gemini-demo/${model}`;
+  }
   if (proxyAvailable) {
     return `/api/gemini-tts/${model}`;
   }
@@ -117,7 +123,7 @@ export async function callGemini(userMessage, missionContext = '') {
   const apiKey = state.settings.geminiApiKey;
   const model = state.settings.geminiModel;
 
-  if (!apiKey && !proxyAvailable) {
+  if (!apiKey && !proxyAvailable && !state.settings.demoMode) {
     return getFallbackResponse('Chave API nao configurada.');
   }
 

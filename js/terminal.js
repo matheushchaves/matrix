@@ -110,7 +110,7 @@ export async function typewriterLine(text, cssClass = '', speed = 30) {
   ]);
 }
 
-export async function typewriterCharacterLine(character, text, speed = 30) {
+export async function typewriterCharacterLine(character, text, speed = 30, { skipTTS = false } = {}) {
   const charClass = `character-${character}`;
   const nameMap = {
     morpheus: 'Morpheus',
@@ -119,8 +119,10 @@ export async function typewriterCharacterLine(character, text, speed = 30) {
   };
   const displayName = nameMap[character] || character;
 
-  // Fire-and-forget TTS (non-blocking)
-  speakText(text, character).catch(() => {});
+  // Fire-and-forget TTS (non-blocking) — skip if caller handles batching
+  if (!skipTTS) {
+    speakText(text, character).catch(() => {});
+  }
 
   const el = outputEl();
   if (!el) return;
