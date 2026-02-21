@@ -77,7 +77,8 @@
   letter-spacing: 1px;
 }
 
-.tutorial-actions button:hover {
+.tutorial-actions button:hover,
+.tutorial-actions button:active {
   background: var(--green);
   color: var(--black);
   border-color: var(--green);
@@ -88,7 +89,8 @@
   color: var(--green-dim);
 }
 
-#tutorial-skip:hover {
+#tutorial-skip:hover,
+#tutorial-skip:active {
   background: transparent;
   color: var(--green);
   border-color: var(--green);
@@ -106,8 +108,6 @@
 /* Mobile tooltip */
 @media (max-width: 768px) {
   #tutorial-tooltip {
-    top: auto !important;
-    bottom: 16px;
     left: 16px !important;
     right: 16px;
     max-width: calc(100vw - 32px);

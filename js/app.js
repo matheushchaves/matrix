@@ -10,8 +10,10 @@ import {
 import { initHome, hideHome, showAliasModal } from './home.js';
 import { startMission, handleCodeSubmission, handleTerminalInput } from './story.js';
 import { addSystemLine } from './terminal.js';
+import { playIntro } from './intro.js';
 import { startMusic } from './audio.js';
 import { initMobile } from './mobile.js';
+import { unlockAudioContext } from './audio-context.js';
 
 // ===== GLOBAL ERROR HANDLING =====
 window.onerror = (msg, source, line, col, error) => {
@@ -43,6 +45,9 @@ async function init() {
 
   // Start rain immediately for atmosphere
   initRain();
+
+  // Prepare audio unlock — first user tap/click will activate AudioContext
+  unlockAudioContext();
 
   // Check for existing save
   loadSave();
@@ -77,6 +82,9 @@ async function newGame() {
   // Reset any existing save to start fresh
   resetSave();
 
+  // Narrative intro — sets context before asking for alias
+  await playIntro();
+
   // Get alias
   const alias = await showAliasModal();
 
@@ -90,13 +98,7 @@ async function newGame() {
   showGameUI();
   setupGame();
 
-  // Welcome message
-  addSystemLine('Conexao estabelecida.');
-  addSystemLine(`Bem-vindo a Matrix, ${alias}.`);
-  addSystemLine('');
-
   // Start first mission
-  await sleep(1000);
   await startMission();
 }
 

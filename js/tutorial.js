@@ -127,8 +127,21 @@ function showStep(index) {
 function positionTooltip(tooltip, targetRect, position) {
   const vw = window.innerWidth;
 
-  // On mobile, CSS handles positioning (pinned to bottom)
-  if (vw <= 768) return;
+  // On mobile, smart position: avoid covering the target element
+  if (vw <= 768) {
+    const vh = window.innerHeight;
+    const targetCenter = targetRect.top + targetRect.height / 2;
+    if (targetCenter > vh / 2) {
+      // Target is in bottom half → tooltip goes to top
+      tooltip.style.top = '16px';
+      tooltip.style.bottom = 'auto';
+    } else {
+      // Target is in top half → tooltip stays at bottom
+      tooltip.style.top = 'auto';
+      tooltip.style.bottom = '16px';
+    }
+    return;
+  }
 
   const gap = 16;
   const margin = 10;

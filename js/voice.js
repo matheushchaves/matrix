@@ -2,6 +2,7 @@
 
 import { getState } from './state.js';
 import { getTtsApiUrl, isProxyActive } from './gemini.js';
+import { getSharedAudioContext } from './audio-context.js';
 
 const TTS_MODEL = 'gemini-2.5-flash-preview-tts';
 
@@ -12,19 +13,11 @@ const CHARACTER_VOICES = {
   smith: 'Orus',          // Firm, decisive — Smith's cold, precise menace
 };
 
-let audioContext = null;
 let currentSource = null;
 
 // Sequential queue: lines play one after another, never overlapping
 let queue = [];
 let processing = false;
-
-function getAudioContext() {
-  if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  return audioContext;
-}
 
 /**
  * Queue text to be spoken. Lines are played sequentially —
@@ -121,8 +114,15 @@ function playPCMAudio(base64Data) {
     };
 
     try {
-      const ctx = getAudioContext();
+      const ctx = getSharedAudioContext();
       if (ctx.state === 'suspended') await ctx.resume();
+
+      // If still not running, audio is blocked by the browser
+      if (ctx.state !== 'running') {
+        console.warn('AudioContext not running, skipping TTS playback');
+        done();
+        return;
+      }
 
       // Decode base64 to binary
       const binaryStr = atob(base64Data);

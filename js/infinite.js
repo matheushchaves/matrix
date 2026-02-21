@@ -21,6 +21,31 @@ function getRandomCategory() {
   return CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
 }
 
+/**
+ * Attempt to parse JSON from Gemini, cleaning common issues:
+ * markdown fences, single quotes, trailing commas, etc.
+ */
+function parseJSON(raw) {
+  // Strip markdown code fences if present
+  let text = raw.trim();
+  text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+
+  // First try as-is
+  try { return JSON.parse(text); } catch {}
+
+  // Fix trailing commas before } or ]
+  let cleaned = text.replace(/,\s*([}\]])/g, '$1');
+
+  try { return JSON.parse(cleaned); } catch {}
+
+  // Replace single-quoted keys/values with double quotes (best effort)
+  cleaned = cleaned.replace(/'/g, '"');
+
+  try { return JSON.parse(cleaned); } catch (e) {
+    throw new Error(`Invalid JSON from Gemini: ${e.message}`);
+  }
+}
+
 export async function generateInfiniteMission() {
   const state = getState();
   const difficulty = getDifficulty();
@@ -63,8 +88,11 @@ REGRAS:
 - Dados de scan/trace devem ser realistas e consistentes com o tema Matrix
 - introDialogue deve ser em portugues, em personagem (Morpheus = filosofico, Oracle = enigmatica, Smith = frio)
 - Alterne entre personagens: use "morpheus", "oracle", ou "smith"
-- O starterCode deve ter comentarios em portugues guiando o jogador
-- O geminiContext deve ter criterios claros de avaliacao
+- O starterCode deve ter comentarios em portugues guiando o jogador (maximo 4 linhas)
+- O geminiContext deve ser conciso (2-3 frases com criterios de sucesso)
+- introDialogue deve ter no maximo 3 falas curtas
+- scanData deve ter no maximo 5 entidades
+- MANTENHA A RESPOSTA COMPACTA — sem textos longos
 - Dificuldade ${difficulty}: ${
   difficulty === 'facil' ? 'conceitos basicos, filtro, map, reduce simples' :
   difficulty === 'medio' ? 'combinacao de APIs, logica intermediaria, algoritmos simples' :
@@ -79,7 +107,7 @@ REGRAS:
     generationConfig: {
       temperature: 1.0,
       topP: 0.95,
-      maxOutputTokens: 2048,
+      maxOutputTokens: 4096,
       responseMimeType: 'application/json',
     }
   });
@@ -89,7 +117,7 @@ REGRAS:
     throw new Error('No response from Gemini');
   }
 
-  const missionData = JSON.parse(text);
+  const missionData = parseJSON(text);
 
   // Build a mission object compatible with the existing system
   const mission = {

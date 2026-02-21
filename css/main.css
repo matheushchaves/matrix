@@ -132,7 +132,9 @@ html, body {
 }
 
 .intro-input button:hover,
-.modal button:hover {
+.intro-input button:active,
+.modal button:hover,
+.modal button:active {
   background: var(--green);
   color: var(--black);
   text-shadow: none;
@@ -332,7 +334,8 @@ html, body {
   padding: 2px 6px;
 }
 
-.hud-right button:hover {
+.hud-right button:hover,
+.hud-right button:active {
   color: var(--green);
 }
 
@@ -479,7 +482,8 @@ html, body {
   letter-spacing: 1px;
 }
 
-#btn-run:hover {
+#btn-run:hover,
+#btn-run:active {
   background: var(--green);
   color: var(--black);
 }
@@ -613,7 +617,8 @@ html, body {
   justify-content: center;
 }
 
-#btn-help:hover {
+#btn-help:hover,
+#btn-help:active {
   border-color: var(--green);
   color: var(--green);
 }
@@ -722,8 +727,8 @@ html, body {
 
   .panel-dot {
     background: transparent;
-    border: 1px solid var(--green-dark);
-    color: var(--green-dark);
+    border: 1px solid var(--green-dim);
+    color: var(--green-dim);
     font-family: var(--font-mono);
     font-size: 11px;
     padding: 4px 14px;
@@ -731,8 +736,17 @@ html, body {
     transition: all 0.2s;
     text-transform: uppercase;
     letter-spacing: 1px;
-    min-height: 32px;
+    min-height: 44px;
     min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .panel-dot:active {
+    background: rgba(0, 255, 65, 0.1);
+    border-color: var(--green);
+    color: var(--green);
   }
 
   .panel-dot.active {
@@ -832,6 +846,79 @@ html, body {
   .modal select {
     font-size: 16px;
   }
+}
+
+/* ===== INTRO MODAL ===== */
+.intro-modal {
+  text-align: left;
+}
+
+.intro-icon {
+  text-align: center;
+  margin-bottom: 12px;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.intro-envelope {
+  color: var(--green);
+  font-size: 11px;
+  line-height: 1.2;
+  margin: 0 auto;
+  display: inline-block;
+  text-shadow: 0 0 8px var(--green-glow);
+}
+
+.intro-badge {
+  position: absolute;
+  top: -2px;
+  margin-left: 4px;
+  background: var(--green);
+  color: var(--black);
+  font-size: 10px;
+  font-weight: bold;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  text-align: center;
+  border-radius: 50%;
+}
+
+.intro-body p {
+  color: var(--green-dim);
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.intro-body p:last-child {
+  margin-bottom: 20px;
+}
+
+.intro-body strong {
+  color: var(--green);
+}
+
+#intro-confirm {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--green);
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.2s;
+}
+
+#intro-confirm:hover,
+#intro-confirm:active {
+  background: var(--green);
+  color: var(--black);
 }
 
 /* ===== EXTRA SMALL ===== */

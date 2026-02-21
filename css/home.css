@@ -76,7 +76,8 @@
   width: 280px;
 }
 
-.home-btn:hover {
+.home-btn:hover,
+.home-btn:active {
   background: var(--green);
   color: var(--black);
   border-color: var(--green);
@@ -95,7 +96,8 @@
   padding: 10px 48px;
 }
 
-.home-btn.secondary:hover {
+.home-btn.secondary:hover,
+.home-btn.secondary:active {
   border-color: var(--green);
   color: var(--green);
   background: rgba(0, 255, 65, 0.08);

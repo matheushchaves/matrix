@@ -404,19 +404,30 @@ async function showDemoComplete() {
 }
 
 async function showGameComplete() {
-  addSystemLine('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
+  triggerEffect('bullet_time');
+  await sleep(1500);
+
+  triggerEffect('rain_intensify');
+  maybeSFX('level_up');
+
+  addSystemLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   addSuccessLine('MATRIX: O CODIGO - COMPLETO');
-  addSystemLine('\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501');
+  addSystemLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  await sleep(800);
 
   const state = getState();
+  addAvatarLine('morpheus');
+  await sleep(500);
+
+  // Solo TTS — only one line before the stats block
   await typewriterCharacterLine('morpheus',
     `Voce fez o impossivel, ${state.player.alias}. Voce e O Escolhido.`, 30);
-  await sleep(500);
+  await sleep(800);
 
   addSystemLine(`Reputacao final: ${state.player.reputation}`);
   addSystemLine(`Missoes completas: ${state.player.completedMissions.length}/7`);
   addSystemLine(`Nivel final: ${state.player.level}`);
-  await sleep(300);
+  await sleep(500);
 
   const rating = state.player.reputation >= 500 ? 'O Escolhido (Neo)'
     : state.player.reputation >= 350 ? 'Operador Senior'
@@ -424,14 +435,34 @@ async function showGameComplete() {
     : 'Recem-desperto';
 
   addSuccessLine(`Titulo: ${rating}`);
+  await sleep(1000);
+
+  // --- Infinite mode transition ---
   addSystemLine('');
-  addSystemLine('O jogo terminou, mas a Matrix continua.');
-  addSystemLine('Digite "nova missao" no terminal para desafios infinitos gerados por IA!');
+  addSystemLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  await sleep(500);
+
+  // Batch TTS for the two infinite-mode lines — 1 API call
+  const infiniteLines = [
+    'A Matrix nao para. Novos desafios surgem a cada momento. Voce esta pronto para o que vem a seguir?',
+    'A partir de agora, eu gero missoes unicas para voce. Sem limites. Sem fim.',
+  ];
+  speakText(infiniteLines.join(' '), 'morpheus').catch(() => {});
+
+  for (const line of infiniteLines) {
+    await typewriterCharacterLine('morpheus', line, 25, { skipTTS: true });
+    await sleep(500);
+  }
+
+  addSystemLine('');
+  addSuccessLine('>>> MODO INFINITO DESBLOQUEADO <<<');
+  addSystemLine('Digite "nova missao" no terminal para desafios infinitos gerados por IA.');
+  addSystemLine('Cada missao e unica — criada sob medida para o seu nivel.');
+  addSystemLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
   triggerEffect('rain_intensify');
-  triggerEffect('bullet_time');
 
-  updateMissionBar('COMPLETO', 'Digite "nova missao" para desafios infinitos.');
+  updateMissionBar('MODO INFINITO', 'Digite "nova missao" para desafios gerados por IA.');
 }
 
 export async function handleTerminalInput(text) {

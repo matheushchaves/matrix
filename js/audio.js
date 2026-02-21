@@ -1,12 +1,9 @@
 // ===== SFX & AMBIENT AUDIO =====
 
-let audioContext = null;
+import { getSharedAudioContext } from './audio-context.js';
 
 function getAudioContext() {
-  if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  return audioContext;
+  return getSharedAudioContext();
 }
 
 // Synthesized SFX using Web Audio API oscillators
